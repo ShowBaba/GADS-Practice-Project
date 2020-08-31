@@ -40,10 +40,10 @@ public class LearningFragment extends Fragment {
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.home_fragment, container, false);
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-//        mProgressBar = view.findViewById(R.id.pb_loading);
+        mProgressBar = view.findViewById(R.id.pb_loading);
 
         try {
             URL url = ApiUtil.buildLearningUrl();
@@ -74,19 +74,18 @@ public class LearningFragment extends Fragment {
         @Override
         protected void onPostExecute(String result) {
             if (result == null){
-                Toast.makeText(getContext(), "Network error", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Network error", Toast.LENGTH_LONG).show();
             }
-            else {
-                ArrayList<Skills> skillsArr = ApiUtil.parseJson(result);
-                adapter = new CustomAdapter(skillsArr);
-                recyclerView.setAdapter(adapter);
-            }
+            ArrayList<Skills> skillsArr = ApiUtil.parseJson(result);
+            adapter = new CustomAdapter(skillsArr);
+            recyclerView.setAdapter(adapter);
+            mProgressBar.setVisibility(View.INVISIBLE);
         }
-//        @Override
-//        protected void onPreExecute() {
-//            mProgressBar = view.findViewById(R.id.pb_loading);
-//            mProgressBar.setVisibility(View.VISIBLE);
-//        }
+
+        @Override
+        protected void onPreExecute() {
+            mProgressBar.setVisibility(View.VISIBLE);
+        }
     }
 
 

@@ -7,7 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -29,15 +31,16 @@ import java.util.ArrayList;
 public class IqFragment extends Fragment {
     View view;
     RecyclerView recyclerView;
-
+    ProgressBar mProgressBar;
     CustomIqAdapter adapter;
 
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.home_fragment, container, false);
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+        mProgressBar = view.findViewById(R.id.pb_loading);
 
         try {
             URL url = ApiUtil.buildIqUrl();
@@ -66,9 +69,18 @@ public class IqFragment extends Fragment {
 
         @Override
         protected void onPostExecute(String result) {
+            if (result == null){
+                Toast.makeText(getActivity(), "Network error", Toast.LENGTH_LONG).show();
+            }
             ArrayList<Skills> skillsArr = ApiUtil.parseJson(result);
             adapter = new CustomIqAdapter(skillsArr);
             recyclerView.setAdapter(adapter);
+            mProgressBar.setVisibility(View.INVISIBLE);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            mProgressBar.setVisibility(View.VISIBLE);
         }
     }
 

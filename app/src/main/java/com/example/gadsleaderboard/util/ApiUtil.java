@@ -1,6 +1,7 @@
 package com.example.gadsleaderboard.util;
 
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 
 import com.example.gadsleaderboard.model.Skills;
@@ -15,6 +16,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by Samuel Shoyemi on 8/29/2020.
@@ -110,4 +114,11 @@ public class ApiUtil {
         }
         return skillsArray;
     }
+
+    // create retrofit instance
+    public static Retrofit.Builder builder = new Retrofit.Builder()
+            .baseUrl("https://docs.google.com/forms/d/e/")
+            .addConverterFactory(GsonConverterFactory.create());
+
+    public static Retrofit retrofit = builder.build();
 }
