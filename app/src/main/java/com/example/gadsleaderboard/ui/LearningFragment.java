@@ -3,6 +3,7 @@ package com.example.gadsleaderboard.ui;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.gadsleaderboard.MainActivity;
 import com.example.gadsleaderboard.util.ApiUtil;
@@ -34,8 +36,9 @@ public class LearningFragment extends Fragment {
     View view;
     RecyclerView recyclerView;
     ProgressBar mProgressBar;
-    TextView errorTv;
+    SwipeRefreshLayout mSwipeRefreshLayout;
     CustomAdapter adapter;
+    private final Handler handler = new Handler();
 
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -44,15 +47,31 @@ public class LearningFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         mProgressBar = view.findViewById(R.id.pb_loading);
+        mSwipeRefreshLayout = view.findViewById(R.id.swipe_refresh_view);
 
+
+       loadData();
+
+        mSwipeRefreshLayout.setOnRefreshListener(() -> {
+            loadData();
+//                Toast.makeText(getActivity(), "refreshing..", Toast.LENGTH_SHORT).show();
+            handler.postDelayed(() -> {
+                if(mSwipeRefreshLayout.isRefreshing()) {
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
+            }, 1000);
+        });
+
+        return view;
+    }
+
+    private void loadData() {
         try {
             URL url = ApiUtil.buildLearningUrl();
             new SkillQueryTask().execute(url);
         }catch (Exception e){
             Log.e("error", e.getMessage());
         }
-
-        return view;
     }
 
 
