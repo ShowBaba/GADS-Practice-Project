@@ -1,10 +1,16 @@
 package com.example.gadsleaderboard;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -43,16 +49,38 @@ public class ProjectSubmissionActivity extends AppCompatActivity {
         submitFormBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+//                ProjectSubmissionActivity.this.executeSendForm(
+//                        fname_et.getText().toString(),
+//                        lname_et.getText().toString(),
+//                        email_et.getText().toString(),
+//                        projectLink_et.getText().toString()
+//                );
+                submitAlertDialog();
+            }
+        });
+
+    }
+
+    public void submitAlertDialog(){
+        ViewGroup viewGroup = findViewById(android.R.id.content);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_layout, viewGroup, false);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogView);
+        AlertDialog alertDialog = builder.create();
+        dialogView.findViewById(R.id.dialog_btn_submit).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 ProjectSubmissionActivity.this.executeSendForm(
                         fname_et.getText().toString(),
                         lname_et.getText().toString(),
                         email_et.getText().toString(),
                         projectLink_et.getText().toString()
                 );
-                submitFormBtn.setBackgroundResource(R.drawable.rounded_corner_btn_white);
+//                Toast.makeText(ProjectSubmissionActivity.this, "HEYYYYY!!!!!!!!!", Toast.LENGTH_SHORT).show();
+
             }
         });
-
+        alertDialog.show();
     }
 
     private void executeSendForm(String fname, String lname, String email, String project_link) {
@@ -65,7 +93,6 @@ public class ProjectSubmissionActivity extends AppCompatActivity {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 Toast.makeText(ProjectSubmissionActivity.this, "Success!", Toast.LENGTH_SHORT).show();
                 clearText();
-                submitFormBtn.setBackgroundResource(R.drawable.rounded_corner_btn);
             }
 
             @Override

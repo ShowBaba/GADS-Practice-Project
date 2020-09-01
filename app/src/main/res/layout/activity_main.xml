@@ -14,7 +14,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_margin="12dp">
 
             <TextView
                 android:id="@+id/title"
@@ -45,6 +46,8 @@
                 android:minHeight="0dp"
                 android:paddingStart="25dp"
                 android:paddingEnd="25dp"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
                 android:text="@string/submit"
                 android:textColor="@color/colorPrimary"
                 android:textSize="18sp"
