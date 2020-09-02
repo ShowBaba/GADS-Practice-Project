@@ -1,4 +1,4 @@
-package com.example.gadsleaderboard;
+package com.example.gadsleaderboard.util;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;

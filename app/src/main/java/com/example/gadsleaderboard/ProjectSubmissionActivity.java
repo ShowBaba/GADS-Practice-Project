@@ -3,10 +3,7 @@ package com.example.gadsleaderboard;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.gadsleaderboard.util.ApiUtil;
+import com.example.gadsleaderboard.util.UserClient;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -49,12 +47,6 @@ public class ProjectSubmissionActivity extends AppCompatActivity {
         submitFormBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                ProjectSubmissionActivity.this.executeSendForm(
-//                        fname_et.getText().toString(),
-//                        lname_et.getText().toString(),
-//                        email_et.getText().toString(),
-//                        projectLink_et.getText().toString()
-//                );
                 submitAlertDialog();
             }
         });
@@ -76,10 +68,26 @@ public class ProjectSubmissionActivity extends AppCompatActivity {
                         email_et.getText().toString(),
                         projectLink_et.getText().toString()
                 );
+                alertDialog.dismiss();
 //                Toast.makeText(ProjectSubmissionActivity.this, "HEYYYYY!!!!!!!!!", Toast.LENGTH_SHORT).show();
-
             }
         });
+        dialogView.findViewById(R.id.cancel_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showStatusDialog(R.layout.error_dialog);
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.show();
+    }
+
+    private void showStatusDialog(int id) {
+        ViewGroup viewGroup = findViewById(android.R.id.content);
+        View dialogView = LayoutInflater.from(this).inflate(id, viewGroup, false);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogView);
+        AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
 
@@ -92,6 +100,7 @@ public class ProjectSubmissionActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 Toast.makeText(ProjectSubmissionActivity.this, "Success!", Toast.LENGTH_SHORT).show();
+                showStatusDialog(R.layout.confirm_submission);
                 clearText();
             }
 
