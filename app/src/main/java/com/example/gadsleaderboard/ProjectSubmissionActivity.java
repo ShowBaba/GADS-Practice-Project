@@ -3,18 +3,23 @@ package com.example.gadsleaderboard;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.gadsleaderboard.util.ApiUtil;
 import com.example.gadsleaderboard.util.UserClient;
+
+import org.jetbrains.annotations.NotNull;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -26,6 +31,7 @@ public class ProjectSubmissionActivity extends AppCompatActivity {
     ImageButton backBtn;
     Button submitFormBtn;
     EditText fname_et, lname_et, email_et, projectLink_et;
+    ProgressBar pb_load;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +42,8 @@ public class ProjectSubmissionActivity extends AppCompatActivity {
         lname_et = findViewById(R.id.last_name);
         email_et = findViewById(R.id.email);
         projectLink_et = findViewById(R.id.project_link_tv);
+        pb_load = findViewById(R.id.pb_load);
+//        pb_load.setVisibility(View.INVISIBLE);
 
         //back btn
         backBtn.setOnClickListener(view -> {
@@ -47,9 +55,14 @@ public class ProjectSubmissionActivity extends AppCompatActivity {
         submitFormBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                pb_load.setVisibility(View.VISIBLE);
                 submitAlertDialog();
             }
         });
+
+//        if(pb_load.getVisibility() == View.VISIBLE){
+//            pb_load.setVisibility(View.INVISIBLE);
+//        }
 
     }
 
@@ -59,6 +72,12 @@ public class ProjectSubmissionActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(dialogView);
         AlertDialog alertDialog = builder.create();
+//        alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//            @Override
+//            public void onDismiss(DialogInterface dialogInterface) {
+//                pb_load.setVisibility(View.INVISIBLE);
+//            }
+//        });
         dialogView.findViewById(R.id.dialog_btn_submit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -69,13 +88,13 @@ public class ProjectSubmissionActivity extends AppCompatActivity {
                         projectLink_et.getText().toString()
                 );
                 alertDialog.dismiss();
-//                Toast.makeText(ProjectSubmissionActivity.this, "HEYYYYY!!!!!!!!!", Toast.LENGTH_SHORT).show();
             }
         });
         dialogView.findViewById(R.id.cancel_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showStatusDialog(R.layout.error_dialog);
+                if (pb_load.isShown())
+                    pb_load.setVisibility(View.INVISIBLE);
                 alertDialog.dismiss();
             }
         });
@@ -92,23 +111,29 @@ public class ProjectSubmissionActivity extends AppCompatActivity {
     }
 
     private void executeSendForm(String fname, String lname, String email, String project_link) {
-        UserClient userClient = ApiUtil.retrofit.create(UserClient.class);
+        UserClient userClient = ApiUtil.getRetrofit().create(UserClient.class);
 
         Call<ResponseBody> responseBodyCall = userClient.sendUserData(fname, lname, email, project_link);
 
         responseBodyCall.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                Toast.makeText(ProjectSubmissionActivity.this, "Success!", Toast.LENGTH_SHORT).show();
+            public void onResponse(@NotNull Call<ResponseBody> call, @NotNull Response<ResponseBody> response) {
+                Log.e("RESPONSE", String.valueOf(response.code()));
+                if (response.code() == 200)
                 showStatusDialog(R.layout.confirm_submission);
+                else
+                    showStatusDialog(R.layout.error_dialog);
+                if (pb_load.isShown())
+                    pb_load.setVisibility(View.INVISIBLE);
                 clearText();
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(@NotNull Call<ResponseBody> call, Throwable t) {
+                if (pb_load.isShown())
+                    pb_load.setVisibility(View.INVISIBLE);
                 Toast.makeText(ProjectSubmissionActivity.this, "Error!", Toast.LENGTH_SHORT).show();
             }
-
         });
 
     }
@@ -118,5 +143,12 @@ public class ProjectSubmissionActivity extends AppCompatActivity {
         lname_et.getText().clear();
         email_et.getText().clear();
         projectLink_et.getText().clear();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        finish();
     }
 }
