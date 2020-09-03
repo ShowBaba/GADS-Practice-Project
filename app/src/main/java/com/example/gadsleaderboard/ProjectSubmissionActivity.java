@@ -3,7 +3,6 @@ package com.example.gadsleaderboard;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -52,12 +51,9 @@ public class ProjectSubmissionActivity extends AppCompatActivity {
         });
 
         // submit form btn
-        submitFormBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                pb_load.setVisibility(View.VISIBLE);
-                submitAlertDialog();
-            }
+        submitFormBtn.setOnClickListener(view -> {
+            pb_load.setVisibility(View.VISIBLE);
+            submitAlertDialog();
         });
 
 //        if(pb_load.getVisibility() == View.VISIBLE){
@@ -78,25 +74,19 @@ public class ProjectSubmissionActivity extends AppCompatActivity {
 //                pb_load.setVisibility(View.INVISIBLE);
 //            }
 //        });
-        dialogView.findViewById(R.id.dialog_btn_submit).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ProjectSubmissionActivity.this.executeSendForm(
-                        fname_et.getText().toString(),
-                        lname_et.getText().toString(),
-                        email_et.getText().toString(),
-                        projectLink_et.getText().toString()
-                );
-                alertDialog.dismiss();
-            }
+        dialogView.findViewById(R.id.dialog_btn_submit).setOnClickListener(view -> {
+            ProjectSubmissionActivity.this.executeSendForm(
+                    fname_et.getText().toString(),
+                    lname_et.getText().toString(),
+                    email_et.getText().toString(),
+                    projectLink_et.getText().toString()
+            );
+            alertDialog.dismiss();
         });
-        dialogView.findViewById(R.id.cancel_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (pb_load.isShown())
-                    pb_load.setVisibility(View.INVISIBLE);
-                alertDialog.dismiss();
-            }
+        dialogView.findViewById(R.id.cancel_btn).setOnClickListener(view -> {
+            if (pb_load.isShown())
+                pb_load.setVisibility(View.INVISIBLE);
+            alertDialog.dismiss();
         });
         alertDialog.show();
     }
