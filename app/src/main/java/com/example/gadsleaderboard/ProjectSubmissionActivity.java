@@ -44,6 +44,7 @@ public class ProjectSubmissionActivity extends AppCompatActivity {
         pb_load = findViewById(R.id.pb_load);
 //        pb_load.setVisibility(View.INVISIBLE);
 
+
         //back btn
         backBtn.setOnClickListener(view -> {
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
@@ -56,9 +57,6 @@ public class ProjectSubmissionActivity extends AppCompatActivity {
             submitAlertDialog();
         });
 
-//        if(pb_load.getVisibility() == View.VISIBLE){
-//            pb_load.setVisibility(View.INVISIBLE);
-//        }
 
     }
 
@@ -68,6 +66,7 @@ public class ProjectSubmissionActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(dialogView);
         AlertDialog alertDialog = builder.create();
+        //TODO: hide progressbar when outside the dialog box is clicked
 //        alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
 //            @Override
 //            public void onDismiss(DialogInterface dialogInterface) {
