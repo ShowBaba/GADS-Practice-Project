@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="100dp"
         android:layout_marginTop="20dp"
-        android:text="Are you sure ?"
+        android:text="Are you sure \?"
         android:textSize="36sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
